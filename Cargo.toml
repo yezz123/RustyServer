@@ -1,0 +1,25 @@
+[package]
+name = "rustyserver"
+version = "0.0.1"
+edition = "2021"
+description = "A simple HTTP server written in Rust"
+keywords = ["http", "request", "HTTP"]
+categories = ["web-programming::http-client",]
+repository = "https://github.com/yezz123/RustyServer"
+authors = ["Yasser Tahiri <hello@yezz.me>"]
+readme = "README.md"
+license = "MIT"
+autotests = true
+
+[dependencies]
+reqwest = { version = "0.11.13", features = ["blocking"] }
+
+[[tests]]
+name = "parse"
+path = "tests/parse.rs"
+required-features = ["parse"]
+
+[[tests]]
+name = "server"
+path = "tests/server.rs"
+required-features = ["server"]

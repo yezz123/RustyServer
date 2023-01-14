@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '**'
+  pull_request: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rust-version: [stable, beta, nightly]
+
+    env:
+      RUST: ${{ matrix.rust-version }}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - run: rustup update ${{ matrix.rust-version }}
+    - run: rustup default ${{ matrix.rust-version }}
+
+    - id: cache-rust
+      uses: Swatinem/rust-cache@v1
+      with:
+        key: v2
+
+    - run: cargo install rustfilt
+      if: steps.cache-rust.outputs.cache-hit != 'true'
+
+    - run: rustup component add llvm-tools-preview
+
+    - run: make all
