@@ -25,7 +25,14 @@ pub enum HttpParseError {
 }
 
 #[derive(Debug, PartialEq)]
+pub enum HttpVersion {
+    Http1_1,
+    Http2_0,
+}
+
+#[derive(Debug, PartialEq)]
 pub struct Request {
     pub method: Method,
     pub path: String,
+    pub http_version: HttpVersion,
 }

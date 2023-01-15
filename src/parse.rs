@@ -1,7 +1,7 @@
 use std::io::Read;
 use std::net::TcpStream;
 
-use crate::types::{HttpParseError, Method, Request};
+use crate::types::{HttpParseError, HttpVersion, Method, Request};
 
 pub fn parse(stream: &mut TcpStream) -> Result<Request, HttpParseError> {
     let mut buf = [0u8; 4096];
@@ -19,17 +19,22 @@ pub fn internal_parse(req: String) -> Result<Request, HttpParseError> {
 
     let method = get_method(strings.next())?;
     let path = get_path(strings.next())?;
+    let http_version = get_http_version(strings.next())?;
 
-    validate_http_version(strings.next())?;
     // validate_crlf; adjust tests too
 
-    Ok(Request { method, path })
+    Ok(Request {
+        method,
+        path,
+        http_version,
+    })
 }
 
-fn validate_http_version(req: Option<&str>) -> Result<(), HttpParseError> {
+fn get_http_version(req: Option<&str>) -> Result<HttpVersion, HttpParseError> {
     if let Some(version) = req {
         match version {
-            "HTTP/1.1" | "HTTP/2.0" => Ok(()),
+            "HTTP/1.1" => Ok(HttpVersion::Http1_1),
+            "HTTP/2.0" => Ok(HttpVersion::Http2_0),
             _ => Err(HttpParseError::InvalidHttpVersion),
         }
     } else {

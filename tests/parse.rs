@@ -1,5 +1,5 @@
 use rustyserver::parse::{get_method, get_path, internal_parse};
-use rustyserver::types::{HttpParseError, Method, Request};
+use rustyserver::types::{HttpParseError, HttpVersion, Method, Request};
 
 #[cfg(test)]
 mod test_parse {
@@ -63,7 +63,8 @@ mod test_parse {
             internal_parse("GET /path HTTP/1.1".to_owned()),
             Ok(Request {
                 method: Method::Get,
-                path: "/path".to_owned()
+                path: "/path".to_owned(),
+                http_version: HttpVersion::Http1_1
             })
         )
     }
