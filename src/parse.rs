@@ -30,15 +30,11 @@ pub fn internal_parse(req: String) -> Result<Request, HttpParseError> {
     })
 }
 
-fn get_http_version(req: Option<&str>) -> Result<HttpVersion, HttpParseError> {
-    if let Some(version) = req {
-        match version {
-            "HTTP/1.1" => Ok(HttpVersion::Http1_1),
-            "HTTP/2.0" => Ok(HttpVersion::Http2_0),
-            _ => Err(HttpParseError::InvalidHttpVersion),
-        }
-    } else {
-        Err(HttpParseError::InvalidHttpVersion)
+fn get_http_version(version: Option<&str>) -> Result<HttpVersion, HttpParseError> {
+    match version {
+        Some("HTTP/1.1") => Ok(HttpVersion::Http1_1),
+        Some("HTTP/2.0") => Ok(HttpVersion::Http2_0),
+        _ => Err(HttpParseError::InvalidHttpVersion),
     }
 }
 
@@ -53,18 +49,14 @@ pub fn get_path(req: Option<&str>) -> Result<String, HttpParseError> {
 }
 
 pub fn get_method(method: Option<&str>) -> Result<Method, HttpParseError> {
-    if let Some(method) = method {
-        Ok(match method {
-            "GET" => Method::Get,
-            "DELETE" => Method::Delete,
-            "HEAD" => Method::Head,
-            "OPTIONS" => Method::Options,
-            "PATCH" => Method::Patch,
-            "POST" => Method::Post,
-            "PUT" => Method::Put,
-            _ => return Err(HttpParseError::InvalidMethod),
-        })
-    } else {
-        Err(HttpParseError::InvalidMethod)
-    }
+    Ok(match method {
+        Some("GET") => Method::Get,
+        Some("DELETE") => Method::Delete,
+        Some("HEAD") => Method::Head,
+        Some("OPTIONS") => Method::Options,
+        Some("PATCH") => Method::Patch,
+        Some("POST") => Method::Post,
+        Some("PUT") => Method::Put,
+        _ => return Err(HttpParseError::InvalidMethod),
+    })
 }
